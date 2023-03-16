@@ -1,5 +1,7 @@
 package Trees;
 
+import java.math.*;
+
 public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     private int height = 0;
@@ -11,23 +13,42 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         root = new AVLNode<K>(value, null, null, null);
     }
 
+    private void modifyHeights(AVLNode<K> node) {
+        AVLNode<K> p = node.getParent();
+        if (p != null) {
+            int h1 = p.getLeft().getHeight();
+            int h2 = p.getRight().getHeight();
+            p.setHeight(Math.max(h1, h2) + 1);
+        }
+    }
+
+    private AVLNode<K> getFirstUnBalance(AVLNode<K> node) {
+        while (node != null) {
+            if (Math.abs(node.getLeft().getHeight() - node.getRight().getHeight()) > 1) {
+                break;
+            } else
+                node = node.getParent();
+        }
+        return node;
+    }
+
     @Override
     public String insert(K key) {
         AVLNode<K> currentNode = searchRecursion(root, key);
         if (currentNode.getKey() == key)
             return "Item already exits";
         else {
+            size++;
+            AVLNode<K> newNode = new AVLNode<K>(key, null, null, currentNode);
             if (currentNode.getKey().compareTo(key) < 0) {
-                currentNode.setRight(new AVLNode<K>(key, null, null, currentNode));
-                // check and adjust hight by rotate
-                return "Item added as a right child";
+                currentNode.setRight(newNode);
             } else {
-                currentNode.setLeft(new AVLNode<K>(key, null, null, currentNode));
-                // check and adjust hight by rotate
-                return "Item added as a left child";
+                currentNode.setLeft(newNode);
             }
+            modifyHeights(newNode);
+            // rotate if neccessary
+            return "Item added successfully";
         }
-
     }
 
     @Override
@@ -47,11 +68,13 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     }
 
     private int max(int leftHeight, int rightHeight) {
-        if(leftHeight >= rightHeight) return leftHeight;
-        else return rightHeight;
+        if (leftHeight >= rightHeight)
+            return leftHeight;
+        else
+            return rightHeight;
     }
 
-    private void rightRotate(AVLNode<K> currentNode){
+    private void rightRotate(AVLNode<K> currentNode) {
         AVLNode<K> temp1 = currentNode.getLeft();
         AVLNode<K> temp2 = temp1.getRight();
         AVLNode<K> temp3 = currentNode.getParent();
@@ -61,12 +84,12 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         temp1.setParent(temp3);
         currentNode.setLeft(temp2);
         temp2.setParent(currentNode);
-        //update heights for currentNode and temp1
-        currentNode.setLeftHeight(max(temp2.getLeftHeight(), temp2.getRightHeight()));
-        temp1.setRightHeight(max(currentNode.getLeftHeight(), currentNode.getRightHeight()));
+        // update heights for currentNode and temp1
+        currentNode.setHeight(currentNode.getHeight() - 1);
+        temp1.setHeight(currentNode.getHeight() + 1);
     }
 
-    private void leftRotate(AVLNode<K> currentNode){
+    private void leftRotate(AVLNode<K> currentNode) {
         AVLNode<K> temp1 = currentNode.getRight();
         AVLNode<K> temp2 = temp1.getLeft();
         AVLNode<K> temp3 = currentNode.getParent();
@@ -76,9 +99,9 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         temp1.setParent(temp3);
         currentNode.setRight(temp2);
         temp2.setParent(currentNode);
-        //update heights for currentNode and temp1
-        currentNode.setRightHeight(max(temp2.getLeftHeight(), temp2.getRightHeight()));
-        temp1.setLeftHeight(max(currentNode.getLeftHeight(), currentNode.getRightHeight()));
+        // update heights for currentNode and temp1
+        currentNode.setHeight(currentNode.getHeight() - 1);
+        temp1.setHeight(currentNode.getHeight() + 1);
     }
 
     // start search

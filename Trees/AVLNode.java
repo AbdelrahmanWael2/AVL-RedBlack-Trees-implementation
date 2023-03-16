@@ -1,8 +1,7 @@
 package Trees;
 
 public class AVLNode<K extends Comparable<K>> implements INode<K> {
-    private int leftHeight;
-    private int rightHeight;
+    private int height;
     private K key;
     private AVLNode<K> left;
     private AVLNode<K> right;
@@ -16,20 +15,12 @@ public class AVLNode<K extends Comparable<K>> implements INode<K> {
         this.parent = parent;
     }
 
-    public int getLeftHeight() {
-        return leftHeight;
+    public int getHeight() {
+        return height;
     }
 
-    public void setLeftHeight(int leftHeight) {
-        this.leftHeight = leftHeight;
-    }
-
-    public int getRightHeight() {
-        return rightHeight;
-    }
-
-    public void setRightHeight(int rightHeight) {
-        this.rightHeight = rightHeight;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     @Override
