@@ -4,29 +4,31 @@ import java.math.*;
 
 public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
-    private int height = 0;
     private int size = 0;
     private AVLNode<K> root;
 
     // constructor
     public AVLTree(K value) {
         root = new AVLNode<K>(value, null, null, null);
+        size = 1;
     }
 
+    // start insert
     // incriment hights after insert
     private void incHeights(AVLNode<K> node) {
         AVLNode<K> p = node.getParent();
-        if (p != null) {
-            int h1 = p.getLeft().getHeight();
-            int h2 = p.getRight().getHeight();
+        while (p != null) {
+            int h1 = heightUtil(p.getLeft());
+            int h2 = heightUtil(p.getRight());
             p.setHeight(Math.max(h1, h2) + 1);
+            p = p.getParent();
         }
     }
 
     // determine the first node having the problem
     private AVLNode<K> getFirstUnBalance(AVLNode<K> node) {
         while (node != null) {
-            if (Math.abs(node.getLeft().getHeight() - node.getRight().getHeight()) > 1) {
+            if (Math.abs(heightUtil(node.getLeft()) - heightUtil(node.getRight())) > 1) {
                 break;
             } else
                 node = node.getParent();
@@ -38,12 +40,12 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     private int getPath(AVLNode<K> node) {
         int ans = 0;
         AVLNode<K> temp;
-        if (node.getLeft().getHeight() > node.getRight().getHeight()) {
+        if (heightUtil(node.getLeft()) > heightUtil(node.getRight())) {
             temp = node.getLeft();
             ans = 10;
         } else
             temp = node.getRight();
-        if (temp.getLeft().getHeight() > temp.getRight().getHeight())
+        if (heightUtil(temp.getLeft()) > heightUtil(temp.getRight()))
             ans += 1;
         return ans;
     }
@@ -76,7 +78,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     @Override
     public String insert(K key) {
         AVLNode<K> currentNode = searchRecursion(root, key);
-        if (currentNode.getKey() == key)
+        if (currentNode.getKey().compareTo(key) == 0)
             return "Item already exits";
         else {
             size++;
@@ -88,64 +90,72 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             }
             incHeights(newNode);
             AVLNode<K> first = getFirstUnBalance(newNode);
-            rotates(getPath(first), first);
+            if (first != null)
+                rotates(getPath(first), first);
             return "Item added successfully";
         }
     }
 
+    // end insert
+
     @Override
     public String delete(K value) {
         AVLNode<K> temp = root;
-        if (deleteRecursion(temp, value).getKey() == value) {
+        if (deleteRecursion(temp, value).getKey().equals(value)) {
             return "Item deleted";
         } else
             return "Not found";
     }
 
-    private AVLNode<K> deleteRecursion(AVLNode<K> root, K value){
+    private AVLNode<K> deleteRecursion(AVLNode<K> root, K value) {
 
         // first: we perform normal BST deletion
 
-        if(root == null) return root;   // nothing to delete
+        if (root == null)
+            return root; // nothing to delete
         int found = root.getKey().compareTo(value); // found: -ve if key < value, +ve if key > value, 0 if key = value
-        if(found < 0) root.setRight(deleteRecursion(root.getRight(), value));
-        else if(found > 0) root.setLeft(deleteRecursion(root.getLeft(), value));
-        else{
-            if(root.getLeft() == null && root.getRight() == null){  // no children
+        if (found < 0)
+            root.setRight(deleteRecursion(root.getRight(), value));
+        else if (found > 0)
+            root.setLeft(deleteRecursion(root.getLeft(), value));
+        else {
+            if (root.getLeft() == null && root.getRight() == null) { // no children
                 root = null;
-            }else if(root.getLeft() == null || root.getRight() == null){    // only one child
-                if(root.getLeft() != null)
+            } else if (root.getLeft() == null || root.getRight() == null) { // only one child
+                if (root.getLeft() != null)
                     root = root.getLeft();
                 else
                     root = root.getRight();
-            }else{  // two children
+            } else { // two children
                 AVLNode<K> temp = root;
-                while(temp.getRight() != null) temp = temp.getRight();  // get the inorder successor
+                while (temp.getRight() != null)
+                    temp = temp.getRight(); // get the inorder successor
                 root.setKey(temp.getKey()); // swap the deleted key with the successor's key
-                root.setRight(deleteRecursion(root.getRight(), temp.getKey())); //delete the successor
+                root.setRight(deleteRecursion(root.getRight(), temp.getKey())); // delete the successor
             }
         }
-        // after finishing the recursive calls, 
+        // after finishing the recursive calls,
         // return a null node if the deleted node was the root of its own recursive call
-        if(root == null) return root;
+        if (root == null)
+            return root;
 
         // second: update heights and check for balance
 
-        root.setHeight(1 + max(root.getLeft().getHeight(), root.getRight().getHeight()));
+        root.setHeight(1 + max(heightUtil(root.getLeft()), heightUtil(root.getRight())));
         int balance = getBalance(root);
-        if(balance > 1){    // case 1 (left)
+        if (balance > 1) { // case 1 (left)
             int subBalance1 = getBalance(root.getLeft());
-            if(subBalance1 >= 0){   // case 1.1 (left left)
+            if (subBalance1 >= 0) { // case 1.1 (left left)
                 rightRotate(root);
-            }else if(subBalance1 < 0){  // case 1.2 (left right)
+            } else if (subBalance1 < 0) { // case 1.2 (left right)
                 leftRotate(root.getLeft());
                 rightRotate(root);
             }
-        }else if(balance < -1){ //case 2 (right)
+        } else if (balance < -1) { // case 2 (right)
             int subBalance2 = getBalance(root.getRight());
-            if(subBalance2 >= 0){   // case 2.1 (right left)
+            if (subBalance2 >= 0) { // case 2.1 (right left)
                 rightRotate(root.getRight());
-            }else if(subBalance2 < 0){  // case 2.2 (right right)
+            } else if (subBalance2 < 0) { // case 2.2 (right right)
                 leftRotate(root);
             }
         }
@@ -160,7 +170,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     @Override
     public String getHeight() {
-        return "The tree height is" + this.height;
+        return "The tree height is " + root.getHeight();
     }
 
     // start search
@@ -168,17 +178,16 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         int found = currentNode.getKey().compareTo(value);
         if (found < 0) {
             if (currentNode.getRight() != null)
-                searchRecursion(currentNode.getRight(), value);
+                return searchRecursion(currentNode.getRight(), value);
             else
                 return currentNode;
         } else if (found > 0) {
             if (currentNode.getLeft() != null)
-                searchRecursion(currentNode.getLeft(), value);
+                return searchRecursion(currentNode.getLeft(), value);
             else
                 return currentNode;
         } else
             return currentNode;
-        return currentNode;
     }
 
     public String search(K value) {
@@ -199,13 +208,16 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             return rightHeight;
     }
 
-    private int heightUtil(AVLNode<K> node){
-        if(node == null) return 0;
-        else return node.getHeight();
+    private int heightUtil(AVLNode<K> node) {
+        if (node == null)
+            return 0;
+        else
+            return node.getHeight();
     }
 
-    private int getBalance(AVLNode<K> node){
-        if(node == null) return 0;
+    private int getBalance(AVLNode<K> node) {
+        if (node == null)
+            return 0;
         else
             return heightUtil(node.getLeft()) - heightUtil(node.getRight());
     }
