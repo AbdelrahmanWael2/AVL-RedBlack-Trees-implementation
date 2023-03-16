@@ -4,9 +4,9 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     private int height = 0;
     private int size = 0;
+    private AVLNode<K> root;
 
-    AVLNode<K> root;
-
+    // constructor
     public AVLTree(K value) {
         root = new AVLNode<K>(value, null, null, null);
     }
@@ -30,9 +30,10 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     @Override
     public String getHeight() {
-        return "The tree height is" + this.height + "\n";
+        return "The tree height is" + this.height;
     }
 
+    // start search
     private AVLNode<K> searchRecursion(AVLNode<K> currentNode, K value) {
         int found = currentNode.getKey().compareTo(value);
         if (found < 0) {
@@ -57,5 +58,6 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         } else
             return "Not found";
     }
+    // end search
 
 }
