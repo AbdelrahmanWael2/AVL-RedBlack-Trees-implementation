@@ -13,7 +13,8 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         root = new AVLNode<K>(value, null, null, null);
     }
 
-    private void modifyHeights(AVLNode<K> node) {
+    // incriment hights after insert
+    private void incHeights(AVLNode<K> node) {
         AVLNode<K> p = node.getParent();
         if (p != null) {
             int h1 = p.getLeft().getHeight();
@@ -22,6 +23,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         }
     }
 
+    // determine the first node having the problem
     private AVLNode<K> getFirstUnBalance(AVLNode<K> node) {
         while (node != null) {
             if (Math.abs(node.getLeft().getHeight() - node.getRight().getHeight()) > 1) {
@@ -30,6 +32,45 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
                 node = node.getParent();
         }
         return node;
+    }
+
+    // determine ll, rr, rl, lr
+    private int getPath(AVLNode<K> node) {
+        int ans = 0;
+        AVLNode<K> temp;
+        if (node.getLeft().getHeight() > node.getRight().getHeight()) {
+            temp = node.getLeft();
+            ans = 10;
+        } else
+            temp = node.getRight();
+        if (temp.getLeft().getHeight() > temp.getRight().getHeight())
+            ans += 1;
+        return ans;
+    }
+
+    // rotate for 4 cases
+    private void rotates(int n, AVLNode<K> node) {
+        switch (n) {
+            // ll
+            case 11:
+                rightRotate(node);
+                break;
+            // rr
+            case 0:
+                leftRotate(node);
+                break;
+            // lr
+            case 10:
+                leftRotate(node.getLeft());
+                rightRotate(node);
+                break;
+            // rl
+            case 1:
+                rightRotate(node.getRight());
+                leftRotate(node);
+            default:
+                break;
+        }
     }
 
     @Override
@@ -45,8 +86,9 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             } else {
                 currentNode.setLeft(newNode);
             }
-            modifyHeights(newNode);
-            // rotate if neccessary
+            incHeights(newNode);
+            AVLNode<K> first = getFirstUnBalance(newNode);
+            rotates(getPath(first), first);
             return "Item added successfully";
         }
     }
