@@ -13,8 +13,21 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     @Override
     public String insert(K key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insert'");
+        AVLNode<K> currentNode = searchRecursion(root, key);
+        if (currentNode.getKey() == key)
+            return "Item already exits";
+        else {
+            if (currentNode.getKey().compareTo(key) < 0) {
+                currentNode.setRight(new AVLNode<K>(key, null, null, currentNode));
+                // check and adjust hight by rotate
+                return "Item added as a right child";
+            } else {
+                currentNode.setLeft(new AVLNode<K>(key, null, null, currentNode));
+                // check and adjust hight by rotate
+                return "Item added as a left child";
+            }
+        }
+
     }
 
     @Override
@@ -40,12 +53,12 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             if (currentNode.getRight() != null)
                 searchRecursion(currentNode.getRight(), value);
             else
-                return null;
+                return currentNode;
         } else if (found > 0) {
             if (currentNode.getLeft() != null)
                 searchRecursion(currentNode.getLeft(), value);
             else
-                return null;
+                return currentNode;
         } else
             return currentNode;
         return currentNode;
@@ -53,7 +66,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     public String search(K value) {
         AVLNode<K> temp = root;
-        if (searchRecursion(temp, value) != null) {
+        if (searchRecursion(temp, value).getKey() == value) {
             return "Item found";
         } else
             return "Not found";
