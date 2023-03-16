@@ -13,6 +13,7 @@ public class AVLNode<K extends Comparable<K>> implements INode<K> {
         this.left = left;
         this.right = right;
         this.parent = parent;
+        height = 1;
     }
 
     public int getHeight() {
