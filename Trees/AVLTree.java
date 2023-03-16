@@ -1,7 +1,5 @@
 package Trees;
 
-import javax.lang.model.element.Element;
-
 public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     private int height = 0;
@@ -35,25 +33,26 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         return "The tree height is" + this.height + "\n";
     }
 
-    private boolean search2(AVLNode<K> currentNode, K value) {
+    private AVLNode<K> searchRecursion(AVLNode<K> currentNode, K value) {
         int found = currentNode.getKey().compareTo(value);
         if (found < 0) {
             if (currentNode.getRight() != null)
-                search2(currentNode.getRight(), value);
+                searchRecursion(currentNode.getRight(), value);
             else
-                return false;
+                return null;
         } else if (found > 0) {
             if (currentNode.getLeft() != null)
-                search2(currentNode.getLeft(), value);
+                searchRecursion(currentNode.getLeft(), value);
             else
-                return false;
-        }
-        return false;
+                return null;
+        } else
+            return currentNode;
+        return currentNode;
     }
 
     public String search(K value) {
         AVLNode<K> temp = root;
-        if (search2(temp, value)) {
+        if (searchRecursion(temp, value) != null) {
             return "Item found";
         } else
             return "Not found";
