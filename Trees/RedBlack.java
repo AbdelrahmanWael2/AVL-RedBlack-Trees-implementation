@@ -9,7 +9,7 @@ public class RedBlack implements ITree {
     }
 
     @Override
-    public String delete() {
+    public String delete(Comparable key) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
