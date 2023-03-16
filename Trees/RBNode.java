@@ -7,10 +7,9 @@ public class RBNode<K extends Comparable<K>, V> implements INode {
     INode right;
     INode left;
 
-
-    public RBNode(K key, char color){
-     this.key = key;
-     this.color = color;
+    public RBNode(K key, char color) {
+        this.key = key;
+        this.color = color;
     }
 
     @Override
@@ -23,42 +22,33 @@ public class RBNode<K extends Comparable<K>, V> implements INode {
 
     }
 
-
-    @Override
     public void setRight(INode right) {
 
     }
 
-    @Override
     public INode getRight() {
         return null;
     }
 
-    @Override
     public void setLeft(INode left) {
 
     }
 
-    @Override
     public INode getLeft() {
         return null;
     }
 
-    @Override
     public void setParent(INode parent) {
 
     }
 
-    @Override
     public INode getParent() {
         return null;
     }
 
-
     public int getColor() {
         return 0;
     }
-
 
     public void setColor(int color) {
 

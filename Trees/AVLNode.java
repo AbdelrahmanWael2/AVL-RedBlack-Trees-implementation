@@ -1,16 +1,35 @@
 package Trees;
 
 public class AVLNode<K extends Comparable<K>> implements INode<K> {
+    private int leftHeight;
+    private int rightHeight;
     private K key;
-    private INode<K> left;
-    private INode<K> right;
-    private INode<K> parent;
+    private AVLNode<K> left;
+    private AVLNode<K> right;
+    private AVLNode<K> parent;
 
-    public AVLNode(K key, INode<K> left, INode<K> right, INode<K> parent) {
+    // constructor
+    public AVLNode(K key, AVLNode<K> left, AVLNode<K> right, AVLNode<K> parent) {
         this.key = key;
         this.left = left;
         this.right = right;
         this.parent = parent;
+    }
+
+    public int getLeftHeight() {
+        return leftHeight;
+    }
+
+    public void setLeftHeight(int leftHeight) {
+        this.leftHeight = leftHeight;
+    }
+
+    public int getRightHeight() {
+        return rightHeight;
+    }
+
+    public void setRightHeight(int rightHeight) {
+        this.rightHeight = rightHeight;
     }
 
     @Override
@@ -18,39 +37,32 @@ public class AVLNode<K extends Comparable<K>> implements INode<K> {
         return this.key;
     }
 
-    @Override
-    public INode<K> getRight() {
+    public AVLNode<K> getRight() {
         return this.right;
     }
 
     @Override
     public void setKey(K key) {
         this.key = key;
-        throw new UnsupportedOperationException("Unimplemented method 'setKey'");
     }
 
-    @Override
-    public void setRight(INode<K> right) {
+    public void setRight(AVLNode<K> right) {
         this.right = right;
     }
 
-    @Override
-    public void setLeft(INode<K> left) {
+    public void setLeft(AVLNode<K> left) {
         this.left = left;
     }
 
-    @Override
-    public INode<K> getLeft() {
+    public AVLNode<K> getLeft() {
         return this.left;
     }
 
-    @Override
-    public void setParent(INode<K> parent) {
+    public void setParent(AVLNode<K> parent) {
         this.parent = parent;
     }
 
-    @Override
-    public INode<K> getParent() {
+    public AVLNode<K> getParent() {
         return this.parent;
     }
 
