@@ -1,15 +1,21 @@
 package Trees;
 
-import javafx.print.PrintColor;
 
 public class Main {
     public static void main(String[] args) {
         AVLTree<Integer> t = new AVLTree<Integer>(10);
 
         t.delete(10);
+        t.insert(10);
         t.insert(5);
-
+        t.insert(11);
+        t.insert(12);
+        t.insert(13);
+        t.insert(14);
+        t.delete(12);
+        t.insert(12);
         t.printInorder();
+        System.out.println("Size: " + t.getSize());
 
         // t.delete(10);
 
