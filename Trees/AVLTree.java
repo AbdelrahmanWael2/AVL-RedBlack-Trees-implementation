@@ -159,11 +159,15 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         if (root == null)
             return root; // nothing to delete
         int found = root.getKey().compareTo(value); // found: -ve if key < value, +ve if key > value, 0 if key = value
-        if (found < 0)
+        if (found < 0){
             root.setRight(deleteRecursion(root.getRight(), value, deletionDone));
-        else if (found > 0)
+            if(root.getRight() != null)
+                root.getRight().setParent(root);
+        }else if (found > 0){
             root.setLeft(deleteRecursion(root.getLeft(), value, deletionDone));
-        else if (found == 0 && size == 1) { // tree has only one node
+            if(root.getLeft() != null)
+                root.getLeft().setParent(root);
+        }else if (found == 0 && size == 1) { // tree has only one node
             size = 0;
             lastDeletedNode = root;
             this.root = null;
@@ -203,6 +207,8 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
                 deletionDone = true;
                 root.setKey(temp.getKey()); // swap the deleted key with the successor's key
                 root.setRight(deleteRecursion(root.getRight(), temp.getKey(), deletionDone)); // delete the successor
+                if(root.getRight() != null)
+                    root.getRight().setParent(root);
             }
         }
         // after finishing the recursive calls,
@@ -217,17 +223,18 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         if (balance > 1) { // case 1 (left)
             int subBalance1 = getBalance(root.getLeft());
             if (subBalance1 >= 0) { // case 1.1 (left left)
-                rightRotate(root);
+                root = rightRotate(root);
             } else if (subBalance1 < 0) { // case 1.2 (left right)
-                leftRotate(root.getLeft());
-                rightRotate(root);
+                root.setLeft(leftRotate(root.getLeft()));
+                root = rightRotate(root);
             }
         } else if (balance < -1) { // case 2 (right)
             int subBalance2 = getBalance(root.getRight());
             if (subBalance2 >= 0) { // case 2.1 (right left)
-                rightRotate(root.getRight());
+                root.setRight(rightRotate(root.getRight()));
+                root = leftRotate(root);
             } else if (subBalance2 < 0) { // case 2.2 (right right)
-                leftRotate(root);
+                root = leftRotate(root);
             }
         }
         return root;
@@ -286,7 +293,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             return heightUtil(node.getLeft()) - heightUtil(node.getRight());
     }
 
-    private void rightRotate(AVLNode<K> currentNode) {
+    private AVLNode<K> rightRotate(AVLNode<K> currentNode) {
         AVLNode<K> temp1 = currentNode.getLeft();
         AVLNode<K> temp2 = temp1.getRight();
         AVLNode<K> temp3 = currentNode.getParent();
@@ -313,9 +320,10 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         // update heights for currentNode and temp1
         currentNode.setHeight(1 + max(heightUtil(currentNode.getLeft()), heightUtil(currentNode.getRight())));
         temp1.setHeight(1 + max(heightUtil(temp1.getLeft()), heightUtil(temp1.getRight())));
+        return temp1;
     }
 
-    private void leftRotate(AVLNode<K> currentNode) {
+    private AVLNode<K> leftRotate(AVLNode<K> currentNode) {
         AVLNode<K> temp1 = currentNode.getRight();
         AVLNode<K> temp2 = temp1.getLeft();
         AVLNode<K> temp3 = currentNode.getParent();
@@ -342,6 +350,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         // update heights for currentNode and temp1
         currentNode.setHeight(1 + max(heightUtil(currentNode.getLeft()), heightUtil(currentNode.getRight())));
         temp1.setHeight(1 + max(heightUtil(temp1.getLeft()), heightUtil(temp1.getRight())));
+        return temp1;
     }
 
     public void printInorder(AVLNode<K> node) {

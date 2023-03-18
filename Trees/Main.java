@@ -9,48 +9,34 @@ public class Main {
 
         AVLTree<String> t = new AVLTree<String>("a");
 
-        t.insert("b");
-        t.insert("c");
-        t.insert("d");
-        t.insert("e");
-        t.insert("f");
-        t.insert("g");
-        t.insert("h");
-        t.insert("i");
-        t.insert("j");
-        t.insert("k");
-        t.insert("l");
-        t.delete("h");
 
-
-
-        // try {
-        //     File myObj = new File("C:/Users/moham/Desktop/AVL-RedBlack-Trees-implementation/Trees/test.txt");
-        //     Scanner myReader = new Scanner(myObj);
-        //     while (myReader.hasNextLine()) {
-        //       String data = myReader.nextLine();
-        //       data = data.toLowerCase();
-        //       t.insert(data);
-        //     }
-        //     myReader.close();
-        //   } catch (FileNotFoundException e) {
-        //     System.out.println("An error occurred.");
-        //     e.printStackTrace();
-        //   }
+        try {
+            File myObj = new File("C:/Users/moham/Desktop/AVL-RedBlack-Trees-implementation/Trees/test.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+              String data = myReader.nextLine();
+              data = data.toLowerCase();
+              t.insert(data);
+            }
+            myReader.close();
+          } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
         
-        //   try {
-        //     File myObj = new File("C:/Users/moham/Desktop/AVL-RedBlack-Trees-implementation/Trees/test2.txt");
-        //     Scanner myReader = new Scanner(myObj);
-        //     while (myReader.hasNextLine()) {
-        //       String data = myReader.nextLine();
-        //       data = data.toLowerCase();
-        //       t.delete(data);
-        //     }
-        //     myReader.close();
-        //   } catch (FileNotFoundException e) {
-        //     System.out.println("An error occurred.");
-        //     e.printStackTrace();
-        //   }
+          try {
+            File myObj = new File("C:/Users/moham/Desktop/AVL-RedBlack-Trees-implementation/Trees/test2.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+              String data = myReader.nextLine();
+              data = data.toLowerCase();
+              t.delete(data);
+            }
+            myReader.close();
+          } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
           
           
 
