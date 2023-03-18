@@ -12,6 +12,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     public AVLTree(K value) {
         root = new AVLNode<K>(value, null, null, null);
         size = 1;
+        System.out.println("Tree created and value " + value + " is added");
     }
 
     // getters and setters
@@ -110,10 +111,10 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         if (size == 0) {
             this.root = new AVLNode<K>(key, null, null, null);
             size++;
-            return "Item added successfully";
+            return key + " added successfully";
         }
         if (currentNode.getKey().compareTo(key) == 0)
-            return "Item already exits";
+            return key + " already exits";
         else {
             size++;
             AVLNode<K> newNode = new AVLNode<K>(key, null, null, currentNode);
@@ -128,7 +129,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             if (first != null)
                 rotates(getPath(first), first);
             incHeights(newNode);
-            return "Item added successfully";
+            return key + " added successfully";
         }
     }
 
@@ -142,9 +143,9 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         int sizeChecker = size;
         deleteRecursion(temp, value, deletionDone);
         if (sizeChecker > size)
-            return "Item deleted successfully";
+            return value + " deleted successfully";
         else
-            return "Item not found";
+            return value + " not found";
     }
 
     private AVLNode<K> deleteRecursion(AVLNode<K> root, K value, boolean deletionDone) {
@@ -252,9 +253,9 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     public String search(K value) {
         AVLNode<K> temp = root;
         if (searchRecursion(temp, value).getKey() == value) {
-            return "Item found";
+            return value + " found";
         } else
-            return "Not found";
+            return value + "not found";
     }
     // end search
 
