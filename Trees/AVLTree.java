@@ -15,6 +15,10 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         System.out.println("Tree created and value " + value + " is added");
     }
 
+    public AVLTree(){
+        root = null;
+    }
+
     // getters and setters
     public AVLNode<K> getRoot() {
         return root;
@@ -252,10 +256,10 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     public String search(K value) {
         AVLNode<K> temp = root;
-        if (searchRecursion(temp, value).getKey() == value) {
+        if (searchRecursion(temp, value).getKey().equals(value)) {
             return value + " found";
         } else
-            return value + "not found";
+            return value + " not found";
     }
     // end search
 
