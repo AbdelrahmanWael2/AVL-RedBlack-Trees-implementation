@@ -1,7 +1,5 @@
 package Trees;
 
-import java.math.*;
-
 public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     // attributes
@@ -17,11 +15,11 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     }
 
     // getters and setters
-    public AVLNode<K> getRoot(){
-        return root;    
+    public AVLNode<K> getRoot() {
+        return root;
     }
 
-    public AVLNode<K> getLastDeletedNode(){
+    public AVLNode<K> getLastDeletedNode() {
         return lastDeletedNode;
     }
 
@@ -32,22 +30,26 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     @Override
     public String getHeight() {
-        return "The tree height is " + root.getHeight();
+        if (root != null)
+            return "The tree height is " + root.getHeight();
+        else
+            return "The tree height is 0";
     }
 
     // start insert
     // increment hights after insert
     private void incHeights(AVLNode<K> node) {
         boolean test = false;
-        if(node.getKey().equals(12)) test = true;
+        if (node.getKey().equals(12))
+            test = true;
         AVLNode<K> p = node.getParent();
         while (p != null) {
             int h1 = heightUtil(p.getLeft());
             int h2 = heightUtil(p.getRight());
-            if(test){
+            if (test) {
             }
             p.setHeight(Math.max(h1, h2) + 1);
-            
+
             p = p.getParent();
         }
     }
@@ -105,7 +107,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     @Override
     public String insert(K key) {
         AVLNode<K> currentNode = searchRecursion(root, key);
-        if(size == 0){
+        if (size == 0) {
             this.root = new AVLNode<K>(key, null, null, null);
             size++;
             return "Item added successfully";
@@ -125,6 +127,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
             if (first != null)
                 rotates(getPath(first), first);
+            incHeights(newNode);
             return "Item added successfully";
         }
     }
@@ -132,13 +135,13 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
     // end insert
 
     // start delete
-    //override the implemented method and call the recursive one
+    // override the implemented method and call the recursive one
     @Override
     public String delete(K value) {
         AVLNode<K> temp = root;
         int sizeChecker = size;
         deleteRecursion(temp, value, deletionDone);
-        if(sizeChecker > size)
+        if (sizeChecker > size)
             return "Item deleted successfully";
         else
             return "Item not found";
@@ -155,32 +158,32 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
             root.setRight(deleteRecursion(root.getRight(), value, deletionDone));
         else if (found > 0)
             root.setLeft(deleteRecursion(root.getLeft(), value, deletionDone));
-        else if (found == 0 && size == 1){  // tree has only one node
+        else if (found == 0 && size == 1) { // tree has only one node
             size = 0;
             lastDeletedNode = root;
             this.root = null;
             return null;
-        }else {
+        } else {
             if (root.getLeft() == null && root.getRight() == null) { // no children
-                if(!deletionDone)
+                if (!deletionDone)
                     lastDeletedNode = root;
                 else
                     deletionDone = false;
                 root = null;
                 size--;
             } else if (root.getLeft() == null || root.getRight() == null) { // only one child
-                if(!deletionDone)
+                if (!deletionDone)
                     lastDeletedNode = root;
                 else
                     deletionDone = false;
                 AVLNode<K> temp = root.getParent();
-                if (root.getLeft() != null){
+                if (root.getLeft() != null) {
                     root = root.getLeft();
-                }else{
+                } else {
                     root = root.getRight();
                 }
                 root.setParent(temp);
-                if(temp == null){
+                if (temp == null) {
                     this.root = root;
                 }
                 size--;
@@ -228,7 +231,7 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
 
     // start search
     private AVLNode<K> searchRecursion(AVLNode<K> currentNode, K value) {
-        if(currentNode == null){
+        if (currentNode == null) {
             return null;
         }
         int found = currentNode.getKey().compareTo(value);
@@ -284,18 +287,24 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         AVLNode<K> temp3 = currentNode.getParent();
         // rotate around currentNode
         temp1.setRight(currentNode);
-        if(temp3 == null) {this.root = temp1; temp1.setParent(null);}
-        else {
+        if (temp3 == null) {
+            this.root = temp1;
+            temp1.setParent(null);
+        } else {
             temp1.setParent(temp3);
-            if(temp3.getLeft() == currentNode){
+            if (temp3.getLeft() == currentNode) {
                 temp3.setLeft(temp1);
-            }else{
+            } else {
                 temp3.setRight(temp1);
             }
         }
         currentNode.setParent(temp1);
-        if(temp2 == null) currentNode.setLeft(null);
-        else {currentNode.setLeft(temp2); temp2.setParent(currentNode);}
+        if (temp2 == null)
+            currentNode.setLeft(null);
+        else {
+            currentNode.setLeft(temp2);
+            temp2.setParent(currentNode);
+        }
         // update heights for currentNode and temp1
         currentNode.setHeight(1 + max(heightUtil(currentNode.getLeft()), heightUtil(currentNode.getRight())));
         temp1.setHeight(1 + max(heightUtil(temp1.getLeft()), heightUtil(temp1.getRight())));
@@ -307,34 +316,42 @@ public class AVLTree<K extends Comparable<K>> implements ITree<K> {
         AVLNode<K> temp3 = currentNode.getParent();
         // rotate around currentNode
         temp1.setLeft(currentNode);
-        if(temp3 == null) {this.root = temp1; temp1.setParent(null);}
-        else {
+        if (temp3 == null) {
+            this.root = temp1;
+            temp1.setParent(null);
+        } else {
             temp1.setParent(temp3);
-            if(temp3.getLeft() == currentNode){
+            if (temp3.getLeft() == currentNode) {
                 temp3.setLeft(temp1);
-            }else{
+            } else {
                 temp3.setRight(temp1);
             }
         }
         currentNode.setParent(temp1);
-        if(temp2 == null) currentNode.setRight(null);
-        else {currentNode.setRight(temp2); temp2.setParent(currentNode);}
+        if (temp2 == null)
+            currentNode.setRight(null);
+        else {
+            currentNode.setRight(temp2);
+            temp2.setParent(currentNode);
+        }
         // update heights for currentNode and temp1
         currentNode.setHeight(1 + max(heightUtil(currentNode.getLeft()), heightUtil(currentNode.getRight())));
         temp1.setHeight(1 + max(heightUtil(temp1.getLeft()), heightUtil(temp1.getRight())));
     }
 
-    public void printInorder(AVLNode<K> node){
-        if(node == null) return;
+    public void printInorder(AVLNode<K> node) {
+        if (node == null)
+            return;
         printInorder(node.getLeft());
-        if(node == root) System.out.print("*");
+        if (node == root)
+            System.out.print("*");
         System.out.print(node.getKey() + " ");
         printInorder(node.getRight());
     }
 
-    //overload
-    public void printInorder(){
-        if(size == 0){
+    // overload
+    public void printInorder() {
+        if (size == 0) {
             System.out.println("Empty tree");
         }
         printInorder(root);
